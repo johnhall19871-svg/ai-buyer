@@ -1,10 +1,10 @@
 # AI Buyer — Project Context
 
-Read this file at the start of every session. It describes what this project is, what's built, and what's planned.
+Read this file at the start of every session.
 
 ## What this is
 
-**AI Buyer** — a new project for AI-assisted buying. Full requirements are not yet defined.
+**AI Buyer** finds items on **John Pye Auctions** (4 collection sites only) that can be bought and resold on **eBay** for profit. It calculates max bids for **≥35% net profit** after all buy/sell costs.
 
 **GitHub:** https://github.com/johnhall19871-svg/ai-buyer
 
@@ -16,26 +16,65 @@ Read this file at the start of every session. It describes what this project is,
 
 | Phase | Status | Scope |
 |-------|--------|-------|
-| **Phase 0** | ✅ Complete | Repo, GitHub, CLAUDE.md, basic scaffold |
-| **Phase 1** | 🔲 Not started | Define requirements and build first version |
+| **Phase 1** | ✅ Complete | Profit engine, watch-list UI, top 25 recs, sample listings |
+| **Phase 2** | 🔲 Not started | Live John Pye + eBay sold data, account integration, learning loop |
+| **Phase 3** | 🔲 Not started | Auto watch list, eBay listing monitor, sold-price feedback |
 
 ---
 
-## Requirements (to be defined)
+## User requirements
 
-Capture and update this section when the user describes their vision:
+### Business model
+Buy at John Pye → collect → sell on eBay. Prefer items that sell within **60 days** (sell-through rate matters).
 
-- What is being bought (products, services, stocks, etc.)
-- How AI assists (price comparison, deal alerts, recommendations, negotiation, etc.)
-- Data sources (retail APIs, scrapers, user input)
-- Target users and workflow
-- Tech stack preferences
+### Collection sites ONLY
+| Site | Postcode |
+|------|----------|
+| Nottingham | NG7 7EA |
+| Chesterfield | S41 9BN |
+| Birmingham | B64 5RE |
+| Staffordshire (Marchington) | ST14 8LP |
+
+**Home / collection start:** DN22 0QG
+
+### Buy-side costs
+- **Fuel:** 13p/mile, **round trip** home → site → home
+- **John Pye buyer premium:** 25% + VAT on hammer = **invoice = hammer × 1.5** (e.g. £100 hammer → £150 invoice)
+
+### Sell-side costs
+- **eBay fees:** 13% of sale price (before shipping income)
+- **Outbound shipping (seller pays):**
+  - &lt;5kg → £4.99
+  - 5–30kg → £13.61
+  - ≥30kg → £49.99
+- Weight estimated from item title (Phase 1 heuristic)
+
+### Profit target
+**Minimum 35% net profit** on total buy cost → drives **max bid** calculation.
+
+### eBay research
+- Sold items last **90 days** for market clearing price
+- Sell-through / volume preference (fast movers)
+
+### UI (Phase 1)
+Web app, John Pye watch-list style table, **top 25** items with:
+- Projected eBay sale price
+- Collection + shipping costs
+- Max bid
+- Link to John Pye lot
+
+### Future (Phase 2+)
+- John Pye account → add to watch list
+- eBay account → monitor sales, feed back into recommendations
+- Track watch-list **sold for** prices after auctions end
 
 ---
 
 ## Tech stack
 
-**TBD** — not chosen yet. Match whatever stack the user picks; don't introduce frameworks unless asked.
+- Node.js 18+ / Express / vanilla HTML-CSS-JS
+- Port **3003**
+- `GET /api/recommendations` → top 25 scored lots
 
 ---
 
@@ -43,26 +82,51 @@ Capture and update this section when the user describes their vision:
 
 ```
 ai-buyer/
-├── CLAUDE.md       ← this file (persistent AI context)
-├── README.md       ← user-facing docs
-├── .gitignore
-└── package.json    ← placeholder until stack is chosen
+├── CLAUDE.md
+├── data/sample-listings.json   ← Phase 1 demo lots (4 sites)
+├── server/
+│   ├── config.js               ← sites, fees, home
+│   ├── geo.js
+│   ├── weight.js               ← weight → shipping tier
+│   ├── profit.js               ← max bid & net profit
+│   ├── ebay.js                 ← sold comps (keyword table Phase 1)
+│   ├── johnpye.js              ← listing fetch + scoring
+│   └── routes/recommendations.js
+└── public/                     ← watch list UI
 ```
 
-Layout will grow as features are added.
+---
+
+## Max bid formula
+
+```
+netRevenue = salePrice × (1 - 0.13) - outboundShipping
+buyCost = hammer × 1.5 + roundTripFuel
+netProfit / buyCost >= 0.35
+→ maxHammer = (netRevenue / 1.35 - roundTripFuel) / 1.5
+```
+
+---
+
+## Phase 1 limitations (important)
+
+1. **John Pye live scrape blocked** by Cloudflare — using `data/sample-listings.json`. Phase 2: browser extension, manual JSON export, or authenticated session.
+2. **eBay sold data** uses keyword comp table — not live sold API. Phase 2: SoldComps / Apify / eBay partner API.
+3. **Weight** is title-based estimate — verify before shipping quotes.
+4. **John Pye / eBay account integration** not built yet.
 
 ---
 
 ## Development conventions
 
-- **Keep scope minimal** — match existing patterns; don't over-engineer early.
-- **Never commit `.env`** or secrets — use `.env.example` when config is needed.
-- **Only commit when the user asks** — they use GitHub for snapshots and revert.
-- **Read this file first** each session so the user doesn't re-explain the project.
+- Keep scope minimal; vanilla JS + Express
+- Never commit `.env`
+- Only commit when user asks
+- Read this file first each session
 
 ---
 
-## Git workflow
+## Git
 
 ```powershell
 cd "C:\Users\user\Desktop\ai-buyer"
@@ -71,15 +135,11 @@ git commit -m "Describe your change"
 git push
 ```
 
-Remote: `origin` → `https://github.com/johnhall19871-svg/ai-buyer.git` (branch: `master`).
+Remote: `https://github.com/johnhall19871-svg/ai-buyer.git` (master)
 
 ---
 
 ## Related projects
 
-| Project | Path | Repo |
-|---------|------|------|
-| Jarvis AI Job Finder | `C:\Users\user\Desktop\website-builder` | `jarvis-ai-job-finder` |
-| Company Metrics Compare | `C:\Users\user\Desktop\claude code test` | `company-metrics-compare` |
-
-Do not mix code or config between projects unless explicitly asked.
+- Jarvis AI Job Finder: `website-builder` repo `jarvis-ai-job-finder`
+- Company Metrics Compare: `claude code test` repo `company-metrics-compare`

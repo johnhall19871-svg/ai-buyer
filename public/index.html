@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Buyer — Watch List</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <div>
+            <h1>AI Buyer</h1>
+            <p>Top picks · John Pye → eBay · 35% min net profit</p>
+          </div>
+        </div>
+        <div class="meta">
+          <span id="home-base">Home: DN22 0QG</span>
+          <span id="updated">Loading…</span>
+        </div>
+      </header>
+
+      <div id="notice" class="notice"></div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Recommended watch list</h2>
+          <p id="summary">Top 25 profitable lots from Nottingham, Chesterfield, Birmingham &amp; Staffordshire</p>
+        </div>
+
+        <div class="table-wrap">
+          <table id="watch-table">
+            <thead>
+              <tr>
+                <th>Lot</th>
+                <th>Item</th>
+                <th>Collection</th>
+                <th>Current bid</th>
+                <th>Max bid</th>
+                <th>eBay projection</th>
+                <th>Costs</th>
+                <th>Net profit</th>
+                <th>Sell-through</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="watch-body">
+              <tr><td colspan="10" class="loading">Loading recommendations…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p id="assumptions"></p>
+        <p class="fine">Modelled eBay comps in Phase 1. Not financial advice. Verify lots on John Pye before bidding.</p>
+      </footer>
+    </div>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
