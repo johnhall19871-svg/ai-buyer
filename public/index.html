@@ -33,7 +33,7 @@
       <section class="panel">
         <div class="panel-head">
           <h2>Recommended watch list</h2>
-          <p id="summary">Top 25 profitable lots from Nottingham, Chesterfield, Birmingham &amp; Staffordshire</p>
+          <p id="summary">Lots ending within 24 hours · top 25 profitable picks</p>
         </div>
 
         <div class="table-wrap">
@@ -43,7 +43,9 @@
                 <th>Lot</th>
                 <th>Item</th>
                 <th>Collection</th>
+                <th>Ends</th>
                 <th>Current bid</th>
+                <th>Proj. final bid</th>
                 <th>Max bid</th>
                 <th>eBay projection</th>
                 <th>Costs</th>
@@ -53,10 +55,18 @@
               </tr>
             </thead>
             <tbody id="watch-body">
-              <tr><td colspan="10" class="loading">Loading recommendations…</td></tr>
+              <tr><td colspan="12" class="loading">Loading recommendations…</td></tr>
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section id="feedback-panel" class="panel feedback-panel hidden">
+        <div class="panel-head">
+          <h2>Auction results — improve projections</h2>
+          <p id="calibration-summary"></p>
+        </div>
+        <div id="feedback-list" class="feedback-list"></div>
       </section>
 
       <footer class="footer">

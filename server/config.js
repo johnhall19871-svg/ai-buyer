@@ -61,3 +61,6 @@ export const ALLOWED_LOCATIONS = new Set(Object.keys(COLLECTION_SITES));
 
 export const PORT = Number(process.env.PORT) || 3003;
 export const TOP_N = Number(process.env.TOP_N || 25);
+
+/** Only recommend lots ending within this many hours */
+export const AUCTION_ENDING_WITHIN_HOURS = Number(process.env.AUCTION_ENDING_WITHIN_HOURS || 24);

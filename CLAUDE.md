@@ -10,14 +10,27 @@ Read this file at the start of every session.
 
 **Local path:** `C:\Users\user\Desktop\ai-buyer`
 
+### Auction window
+Only recommend lots ending within **24 hours** (`AUCTION_ENDING_WITHIN_HOURS=24`).
+
+### Projected final bid
+- Surge model based on hours until close (most bidding in last 24h)
+- **Calibration factor** learned from stored actual vs projected results (`data/bid-feedback.json`)
+- Max bid / profit checks use **projected final bid**, not current bid
+
+### Feedback loop
+- Each recommendation run logs predictions to `data/bid-feedback.json`
+- After auction: POST `/api/feedback/actual` with actual hammer from John Pye watch list
+- Future projections adjust using median actual/projected ratio
+
 ---
 
 ## Current status
 
 | Phase | Status | Scope |
 |-------|--------|-------|
-| **Phase 1** | ✅ Complete | Profit engine, watch-list UI, top 25 recs, sample listings |
-| **Phase 2** | 🔲 Not started | Live John Pye + eBay sold data, account integration, learning loop |
+| **Phase 1** | ✅ Complete | Profit engine, 24h filter, proj. final bid, feedback store, watch-list UI |
+| **Phase 2** | 🔲 Not started | Live John Pye + eBay sold data, auto-resolve from watch list |
 | **Phase 3** | 🔲 Not started | Auto watch list, eBay listing monitor, sold-price feedback |
 
 ---

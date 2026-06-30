@@ -22,5 +22,6 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Local Claude settings
-.claude/
+# Local learning data (actual vs projected bids)
+data/bid-feedback.json
+
