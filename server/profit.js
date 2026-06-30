@@ -11,10 +11,12 @@ import { shippingCost } from './weight.js';
  * Total cost to buy at hammer price H including John Pye premium + collection fuel.
  * @param {number} hammer
  * @param {number} milesOneWay
+ * @param {number} [fuelRoundTrip] allocated fuel for this item (0 for same-trip add-ons)
  */
-export function totalBuyCost(hammer, milesOneWay) {
-  const premium = hammer * JOHN_PYE_BUYER_MULTIPLIER;
-  const fuel = fuelCostRoundTrip(milesOneWay, FUEL_PER_MILE);
+export function totalBuyCost(hammer, milesOneWay, fuelRoundTrip) {
+  const fuel =
+    fuelRoundTrip ??
+    fuelCostRoundTrip(milesOneWay, FUEL_PER_MILE);
   return {
     hammer,
     johnPyeInvoice: money(hammer * JOHN_PYE_BUYER_MULTIPLIER),
@@ -44,10 +46,13 @@ export function netSaleRevenue(salePrice, outboundShipping) {
  * @param {number} projectedSalePrice
  * @param {number} outboundShipping
  * @param {number} milesOneWay
+ * @param {number} [fuelRoundTrip] allocated fuel for this item
  */
-export function maxHammerBid(projectedSalePrice, outboundShipping, milesOneWay) {
+export function maxHammerBid(projectedSalePrice, outboundShipping, milesOneWay, fuelRoundTrip) {
   const sale = netSaleRevenue(projectedSalePrice, outboundShipping);
-  const fuel = fuelCostRoundTrip(milesOneWay, FUEL_PER_MILE);
+  const fuel =
+    fuelRoundTrip ??
+    fuelCostRoundTrip(milesOneWay, FUEL_PER_MILE);
   const netRevenue = sale.net ?? 0;
 
   // netRevenue - (H * multiplier + fuel) >= MIN * (H * multiplier + fuel)
@@ -61,9 +66,16 @@ export function maxHammerBid(projectedSalePrice, outboundShipping, milesOneWay) 
 
 /**
  * Full profit picture at a given hammer bid.
+ * @param {{ hammer: number, projectedSalePrice: number, outboundShipping: number, milesOneWay: number, fuelRoundTrip?: number }} params
  */
-export function evaluateDeal({ hammer, projectedSalePrice, outboundShipping, milesOneWay }) {
-  const buy = totalBuyCost(hammer, milesOneWay);
+export function evaluateDeal({
+  hammer,
+  projectedSalePrice,
+  outboundShipping,
+  milesOneWay,
+  fuelRoundTrip,
+}) {
+  const buy = totalBuyCost(hammer, milesOneWay, fuelRoundTrip);
   const sale = netSaleRevenue(projectedSalePrice, outboundShipping);
   const netProfit = (sale.net ?? 0) - (buy.total ?? 0);
   const netProfitRate = buy.total > 0 ? netProfit / buy.total : 0;
@@ -74,6 +86,11 @@ export function evaluateDeal({ hammer, projectedSalePrice, outboundShipping, mil
     netProfit: money(netProfit),
     netProfitPct: pct(netProfitRate),
     meetsTarget: netProfitRate >= MIN_NET_PROFIT_RATE,
-    maxHammerBid: maxHammerBid(projectedSalePrice, outboundShipping, milesOneWay),
+    maxHammerBid: maxHammerBid(
+      projectedSalePrice,
+      outboundShipping,
+      milesOneWay,
+      fuelRoundTrip
+    ),
   };
 }

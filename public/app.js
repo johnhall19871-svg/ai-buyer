@@ -12,6 +12,16 @@ function gbp(n) {
   return `£${Number(n).toFixed(2)}`;
 }
 
+function fuelLabel(item) {
+  if (item.fuelAllocation === 'additional') {
+    return `£0 · same trip (${item.locationItemsInTrip} lots)`;
+  }
+  if (item.locationItemsInTrip > 1) {
+    return `${gbp(item.travelFuelRoundTrip)} trip · ${gbp(item.tripFuelShare)}/lot (${item.locationItemsInTrip})`;
+  }
+  return `${gbp(item.travelFuelRoundTrip)} RT`;
+}
+
 function renderRow(item) {
   const p = item.profitAtProjectedFinalBid;
   const stPct = Math.round(item.sellThroughScore * 100);
@@ -25,7 +35,7 @@ function renderRow(item) {
       </td>
       <td>
         ${item.location}
-        <span class="sub">${item.travelMilesOneWay} mi · fuel ${gbp(item.travelFuelRoundTrip)} RT</span>
+        <span class="sub">${item.travelMilesOneWay} mi · fuel ${fuelLabel(item)}</span>
       </td>
       <td>
         <span class="ends">${item.timeRemainingLabel}</span>
@@ -39,7 +49,7 @@ function renderRow(item) {
         <span class="sub">${item.ebaySold90Days} sold / 90d</span>
       </td>
       <td>
-        <span class="sub">JP ×1.5 + fuel @ proj. bid</span>
+        <span class="sub">${item.fuelAllocation === 'additional' ? 'JP ×1.5 · no extra fuel' : 'JP ×1.5 + fuel @ proj. bid'}</span>
         <span class="money">${gbp(p.buy.total)}</span>
         <span class="sub">eBay 13% + ship ${gbp(item.outboundShipping)}</span>
       </td>
@@ -151,10 +161,10 @@ async function load() {
     homeBase.textContent = `Home: ${data.home.postcode}`;
     updated.textContent = `Updated ${new Date(data.generatedAt).toLocaleString('en-GB')}`;
     summary.textContent = `Showing ${data.recommendations.length} of ${data.qualifiedCount} qualifying lots (${data.endingWithin24h} ending within ${data.endingWithinHours}h · ${data.totalCandidates} total scanned)`;
-    notice.innerHTML = `<strong>24h window:</strong> Only lots ending within ${data.endingWithinHours} hours are recommended. ${data.dataSource.bidProjection}`;
+    notice.innerHTML = `<strong>24h window:</strong> Only lots ending within ${data.endingWithinHours} hours are recommended. ${data.dataSource.johnPye} ${data.dataSource.bidProjection}`;
 
     assumptions.textContent =
-      'Proj. final bid uses last-24h surge model + learned calibration. Max bid = 35% net profit at projected hammer. Record actual results after auction closes.';
+      'One collection trip per site — only the first lot at each location includes fuel; add-ons at the same site add £0 fuel. Max bid = 35% net profit at projected hammer.';
 
     if (data.recommendations.length === 0) {
       body.innerHTML = `<tr><td colspan="12" class="loading">No lots ending within 24h meet the 35% profit target right now.</td></tr>`;

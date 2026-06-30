@@ -6,12 +6,15 @@
   "description": "AI Buyer — John Pye to eBay flip recommender",
   "scripts": {
     "dev": "node server/index.js",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "postinstall": "playwright install chromium",
+    "test:live": "node scripts/test-live.mjs"
   },
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "playwright": "^1.61.1"
   },
   "engines": {
     "node": ">=18"

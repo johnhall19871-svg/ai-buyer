@@ -8,10 +8,12 @@ Find profitable **John Pye Auctions** lots to buy and resell on **eBay** — wit
 
 ```powershell
 cd "C:\Users\user\Desktop\ai-buyer"
-npm install
+npm install   # installs Playwright Chromium via postinstall
 copy .env.example .env
 npm run dev
 ```
+
+First live scrape can take ~30–90s (then cached 15 min). Tune with `JOHNPYE_MAX_EVENTS_PER_LOCATION` and `JOHNPYE_MAX_PAGES` in `.env`.
 
 Open **http://localhost:3003**
 
@@ -27,7 +29,14 @@ Open **http://localhost:3003**
 - **Sell-through score** from 90-day sold volume + estimated days to sell
 - Direct **View lot** links to John Pye
 
-## Phase 2 planned
+## Phase 2 (in progress)
+
+- **Live John Pye listings** via Playwright (Cloudflare-aware). Cached 15 min.
+- Scans Nottingham, Chesterfield, Birmingham, Marchington events only.
+- Set `JOHNPYE_LIVE=0` to fall back to sample data.
+- Still TODO: real eBay sold API, watch list import, auto-resolve actual hammer
+
+## Phase 2 planned (remaining)
 
 - Live John Pye listings via account/browser integration
 - Real eBay sold listings API

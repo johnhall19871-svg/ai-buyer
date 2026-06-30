@@ -30,7 +30,7 @@ Only recommend lots ending within **24 hours** (`AUCTION_ENDING_WITHIN_HOURS=24`
 | Phase | Status | Scope |
 |-------|--------|-------|
 | **Phase 1** | ✅ Complete | Profit engine, 24h filter, proj. final bid, feedback store, watch-list UI |
-| **Phase 2** | 🔲 Not started | Live John Pye + eBay sold data, auto-resolve from watch list |
+| **Phase 2** | 🟡 In progress | Live John Pye scrape (Playwright). eBay sold API + watch list auto-resolve still TODO |
 | **Phase 3** | 🔲 Not started | Auto watch list, eBay listing monitor, sold-price feedback |
 
 ---

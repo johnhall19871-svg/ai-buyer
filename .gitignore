@@ -25,3 +25,7 @@ Thumbs.db
 # Local learning data (actual vs projected bids)
 data/bid-feedback.json
 
+# Scrape debug artifacts
+scripts/*.html
+scripts/lot-detail-sample.txt
+
